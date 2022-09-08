@@ -12,6 +12,7 @@ const int THICKNESS = 2;
 
 Scalar BLACK = Scalar(0, 0, 0);
 Scalar BLUE = Scalar(155, 178, 50);
+Scalar GREEN = Scalar(0, 255, 0);
 Scalar YELLOW = Scalar(0, 255, 255);
 Scalar RED = Scalar(0, 0, 255);
 
@@ -27,8 +28,8 @@ void draw_label(Mat& input_image, string label, int left, int top)
 
     Point brc = Point(left + label_size.width, top + label_size.height + baseLine);
 
-    rectangle(input_image, tlc, brc, BLACK, FILLED);
-    putText(input_image, label, Point(left, top + label_size.height), FONT_FACE, FONT_SCALE, YELLOW, THICKNESS);
+    rectangle(input_image, tlc, brc, GREEN, FILLED);
+    putText(input_image, label, Point(left, top + label_size.height), FONT_FACE, FONT_SCALE, BLACK, THICKNESS);
 }
 
 vector<Mat> pre_process(Mat& input_image, Net& net)
@@ -101,7 +102,7 @@ Mat post_process(Mat& input_image, vector<Mat>& outputs, const vector<string>& c
         int width = box.width;
         int height = box.height;
 
-        rectangle(input_image, Point(left, top), Point(left + width, top + height), BLUE, 3 * THICKNESS);
+        rectangle(input_image, Point(left, top), Point(left + width, top + height), GREEN, 3 * THICKNESS);
         string label = format("%.2f", confidences[idx]);
         label = class_name[class_ids[idx]] + ":" + label;
         draw_label(input_image, label, left, top);

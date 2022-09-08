@@ -2,8 +2,6 @@
 
 wxIMPLEMENT_APP(cApp);
 
-
-// -------------------------- Application --------------------------
 cApp::cApp()
 {
 	
@@ -25,40 +23,55 @@ bool cApp::OnInit()
 	return true;
 }
 
-
-// -------------------------- Main Frame --------------------------
+int cApp::OnExit()
+{
+	if(mainFrame->showingRes)
+	{
+		if (remove(mainFrame->resFilePath.c_str()) != 0)
+		{
+			perror("Error deleting file");
+			return -1;
+		}
+	}
+	return 0;
+}
 
 cMain::cMain() : wxFrame(nullptr, wxID_ANY, "DarkNet Prediction", wxPoint(30, 30), wxSize(1000, 600))
 {
-	drawPanel = new wxImagePanel(this, wxT("test_images/puppy.jpg"), wxBITMAP_TYPE_JPEG);
+	// --------------------------------------- Image Panel ---------------------------------------
+	drawPanel = new wxImagePanel(this, wxBITMAP_TYPE_JPEG);
+
+	// ------------------------------------ File Search Panel -----------------------------------
 	wxPanel *fileSearchPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(300, 500));
 	fileSearchPanel->SetBackgroundColour(wxColor(100, 100, 100));
 
+	// -------------------------------- Sizer for horizontal split -------------------------------
 	wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
 	sizer->Add(drawPanel, 1, wxEXPAND | wxALL, 10);
 	sizer->Add(fileSearchPanel, 1, wxEXPAND | wxALL, 10);
 
+	// ------------------------------------ Button Panel -----------------------------------
 	wxPanel *buttonPanel = new wxPanel(fileSearchPanel, wxID_ANY, wxDefaultPosition, wxSize(300, 100));
 	m_btn1 = new wxButton(buttonPanel, 10002, "Predict", wxDefaultPosition, wxSize(150, 30));
-	error_text_field = new wxStaticText(buttonPanel, wxID_ANY, wxString(""), wxPoint(160, 0), wxSize(150, 30));
+	error_text_field = new wxStaticText(buttonPanel, wxID_ANY, wxString(""), wxPoint(160, 0), wxSize(350, 30));
 	error_text_field->SetForegroundColour(wxColour(255, 0, 0));
 	error_text_field->SetFont(error_text_field->GetFont().Scale(1.5));
+
+	// ------------------------------------ File select -----------------------------------
 	m_file_ctrl = new wxFileCtrl(fileSearchPanel, 10001, wxString(".\\test_images"), wxEmptyString, wxString::FromAscii(wxFileSelectorDefaultWildcardStr), wxFC_OPEN, wxDefaultPosition, wxSize(300, 300));
 
-
+	// ------------------------------------ Model select -----------------------------------
 	wxPanel* choicePanel = new wxPanel(fileSearchPanel, wxID_ANY, wxDefaultPosition, wxSize(300, 100));
 	wxString choices[] = { wxT("Large"), wxT("Medium"), wxT("Small"), wxT("Nano")};
 	modelChoice = new wxChoice(choicePanel, 10003, wxDefaultPosition, wxSize(150, 30), 4, choices);
 	wxStaticText *text_field = new wxStaticText(choicePanel, wxID_ANY, wxString("(NN Model)"), wxPoint(160, 5), wxSize(150, 30));
 
-	// wxPanel* errorPanel = new wxPanel(fileSearchPanel, wxID_ANY, wxDefaultPosition, wxSize(300, 100));
-	// textCtrl = new wxTextCtrl(errorPanel, 10004, "Error message", wxDefaultPosition, wxSize(300, 100));
 
+	// ------------------------------------ Sizer for right side -----------------------------------
 	wxBoxSizer* fileSearchSizer = new wxBoxSizer(wxVERTICAL);
 	fileSearchSizer->Add(m_file_ctrl, 1, wxEXPAND | wxALL, 10);
 	fileSearchSizer->Add(choicePanel, 1, wxEXPAND | wxALL, 10);
 	fileSearchSizer->Add(buttonPanel, 1, wxEXPAND | wxALL, 10);
-	// fileSearchSizer->Add(errorPanel, 1, wxEXPAND | wxALL, 10);
 
 	fileSearchPanel->SetSizer(fileSearchSizer);
 
@@ -97,7 +110,6 @@ void cMain::onButtonClicked(wxCommandEvent& event)
 	if (selectedFilePath.empty())
 	{
 		error_text_field->SetLabel(wxString("File not selected!"));
-
 		return;
 	}
 
@@ -107,24 +119,32 @@ void cMain::onButtonClicked(wxCommandEvent& event)
 		return;
 	}
 
-	error_text_field->SetLabel(wxEmptyString);
-	string selectedFilePathString = string(selectedFilePath.mb_str());
-	string selectedFileString = string(selectedFile.mb_str());
-	predict(selectedFilePathString, selectedFileString, selectedModel);
+	if (selectedFilePath.compare(selectedFilePath.size() - 4, 4, wxString(".png")) == 0 ||
+		selectedFilePath.compare(selectedFilePath.size() - 4, 4, wxString(".jpg")) == 0 ||
+		selectedFilePath.compare(selectedFilePath.size() - 5, 5, wxString(".jpeg")) == 0)
+	{
+		error_text_field->SetLabel(wxEmptyString);
+		string selectedFilePathString = string(selectedFilePath.mb_str());
+		string selectedFileString = string(selectedFile.mb_str());
+		predict(selectedFilePathString, selectedFileString, selectedModel);
 
-	showingRes = true;
-	wxString resFile = wxString("temp/") + selectedFile;
-	drawPanel->loadNewImage(resFile);
-	resFilePath = string(resFile.mb_str());
+		showingRes = true;
+		wxString resFile = wxString("temp/") + selectedFile;
+		drawPanel->loadNewImage(resFile);
+		resFilePath = string(resFile.mb_str());
+	}
+	else
+	{
+		error_text_field->SetLabel(wxString("Selected file has unsupported format!"));
+	}
 }
 
 
 
 // -------------------------- Image Viewer --------------------------
-wxImagePanel::wxImagePanel(wxFrame* parent, wxString file, wxBitmapType format) :
+wxImagePanel::wxImagePanel(wxFrame* parent, wxBitmapType format) :
 	wxPanel(parent)
 {
-	image.LoadFile(file, format);
 	blank = new wxImage(wxSize(100, 100), true);		// blank, when no image is selected
 
 	// image current dimensions
@@ -213,7 +233,6 @@ void wxImagePanel::loadNewImage(wxString file)
 		}
 		else
 		{
-			cout << "Wrong file format!" << endl;
 			return;
 		}
 	}

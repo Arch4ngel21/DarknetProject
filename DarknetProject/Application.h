@@ -3,7 +3,6 @@
 #include "wx/sizer.h"
 #include "Darknet.h"
 
-
 #ifndef wxUSE_FLECTRL
 #define wxUSE_FILECTRL 1
 #endif
@@ -19,7 +18,7 @@ class wxImagePanel : public wxPanel
 	bool shouldShow = false;
 
 public:
-	wxImagePanel(wxFrame* parent, wxString file, wxBitmapType format);
+	wxImagePanel(wxFrame* parent, wxBitmapType format);
 
 	void paintEvent(wxPaintEvent& evt);
 	void paintNow();
@@ -84,6 +83,7 @@ private:
 
 public:
 	virtual bool OnInit();
+	virtual int OnExit();
 };
 
 
