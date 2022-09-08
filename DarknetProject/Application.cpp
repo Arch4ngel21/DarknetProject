@@ -32,7 +32,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "DarkNet Prediction", wxPoint(30, 30
 {
 	drawPanel = new wxImagePanel(this, wxT("test_images/puppy.jpg"), wxBITMAP_TYPE_JPEG);
 	wxPanel *fileSearchPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(300, 500));
-	fileSearchPanel->SetBackgroundColour(wxColor(125, 125, 125));
+	fileSearchPanel->SetBackgroundColour(wxColor(100, 100, 100));
 
 	wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
 	sizer->Add(drawPanel, 1, wxEXPAND | wxALL, 10);
@@ -40,12 +40,16 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "DarkNet Prediction", wxPoint(30, 30
 
 	wxPanel *buttonPanel = new wxPanel(fileSearchPanel, wxID_ANY, wxDefaultPosition, wxSize(300, 100));
 	m_btn1 = new wxButton(buttonPanel, 10002, "Predict", wxDefaultPosition, wxSize(150, 30));
+	error_text_field = new wxStaticText(buttonPanel, wxID_ANY, wxString(""), wxPoint(160, 0), wxSize(150, 30));
+	error_text_field->SetForegroundColour(wxColour(255, 0, 0));
+	error_text_field->SetFont(error_text_field->GetFont().Scale(1.5));
 	m_file_ctrl = new wxFileCtrl(fileSearchPanel, 10001, wxString(".\\test_images"), wxEmptyString, wxString::FromAscii(wxFileSelectorDefaultWildcardStr), wxFC_OPEN, wxDefaultPosition, wxSize(300, 300));
 
 
 	wxPanel* choicePanel = new wxPanel(fileSearchPanel, wxID_ANY, wxDefaultPosition, wxSize(300, 100));
 	wxString choices[] = { wxT("Large"), wxT("Medium"), wxT("Small"), wxT("Nano")};
 	modelChoice = new wxChoice(choicePanel, 10003, wxDefaultPosition, wxSize(150, 30), 4, choices);
+	wxStaticText *text_field = new wxStaticText(choicePanel, wxID_ANY, wxString("(NN Model)"), wxPoint(160, 5), wxSize(150, 30));
 
 	// wxPanel* errorPanel = new wxPanel(fileSearchPanel, wxID_ANY, wxDefaultPosition, wxSize(300, 100));
 	// textCtrl = new wxTextCtrl(errorPanel, 10004, "Error message", wxDefaultPosition, wxSize(300, 100));
@@ -92,16 +96,18 @@ void cMain::onButtonClicked(wxCommandEvent& event)
 {
 	if (selectedFilePath.empty())
 	{
-		// textCtrl->WriteText(wxString("File path is empty!\n"));
+		error_text_field->SetLabel(wxString("File not selected!"));
+
 		return;
 	}
 
 	if (selectedModel == -1)
 	{
-		// textCtrl->WriteText(wxString("Model not selected!\n"));
+		error_text_field->SetLabel(wxString("Model not selected!"));
 		return;
 	}
 
+	error_text_field->SetLabel(wxEmptyString);
 	string selectedFilePathString = string(selectedFilePath.mb_str());
 	string selectedFileString = string(selectedFile.mb_str());
 	predict(selectedFilePathString, selectedFileString, selectedModel);
@@ -110,10 +116,6 @@ void cMain::onButtonClicked(wxCommandEvent& event)
 	wxString resFile = wxString("temp/") + selectedFile;
 	drawPanel->loadNewImage(resFile);
 	resFilePath = string(resFile.mb_str());
-
-	// char buffer[10];
-	// textCtrl->WriteText(wxString(selectedFilePathString + " - " + selectedFileString + " - " + string(itoa(selectedModel, buffer, 10)) + " - "));
-	// textCtrl->WriteText(wxString("Success!\n"));
 }
 
 

@@ -50,7 +50,7 @@ public:
 	wxFileCtrl* m_file_ctrl = nullptr;
 	wxImagePanel* drawPanel = nullptr;
 	wxChoice* modelChoice = nullptr;
-	// wxTextCtrl* textCtrl = nullptr;
+	wxStaticText* error_text_field = nullptr;
 
 	wxString selectedFile;
 	wxString selectedFilePath;

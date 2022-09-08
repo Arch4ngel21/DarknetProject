@@ -6,7 +6,7 @@ const float SCORE_THRESHOLD = 0.5;
 const float NMS_THRESHOLD = 0.45;
 const float CONFIDENCE_THRESHOLD = 0.45;
 
-const float FONT_SCALE = 0.9;
+const float FONT_SCALE = 1.0;
 const int FONT_FACE = FONT_HERSHEY_SIMPLEX;
 const int THICKNESS = 2;
 
@@ -160,8 +160,8 @@ int predict(string path, string file, int model)
     vector<double> layersTimes;
     double freq = getTickFrequency() / 1000;
     double t = net.getPerfProfile(layersTimes) / freq;
-    string label = format("Inference time : %.2f ms", t);
-    putText(img, label, Point(20, 40), FONT_FACE, FONT_SCALE, RED);
+    string label = format("Time  : %.2f ms", t);
+    putText(img, label, Point(20, 40), FONT_FACE, FONT_SCALE, RED, THICKNESS);
 
     string res_file = "temp/" + file;
     imwrite(res_file, img);
