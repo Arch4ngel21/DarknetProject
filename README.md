@@ -55,3 +55,5 @@ Image needs to be selected in order to start making detections. Accepted file fo
 sizes of saved Darknet models in 'models' folder. One needs to be selected for algorithm to start.
 4. After selection of image and NN model press this button to start the algorithm for making detections.
 
+Image with detections will appear in Image viewer ([example](DarknetProject/images/img4.png)) and also will be saved to 'temp' folder.
+If you select another image, the result will be deleted.
