@@ -41,3 +41,17 @@ I stick with Windows version.
 
 After these steps you should be able to open project with no errors (it may be neccessary to reopen it). After running it with
 _Ctrl_ + _F5_ you should see the app window.
+
+## 2. Usage
+
+On program start application window will appear:
+
+![img1](DarknetProject/images/img5.png)
+
+1. Image viewer - after selecting image file in section 2. it will be displayed in this field.
+2. File selection field - by default it's targeted to '/DarknetProject/DarknetProject/test_images' directory.
+Image needs to be selected in order to start making detections. Accepted file formats are .png, .jpg and .jpeg.
+3. Neural network model selection field - available are 4 models: Large, Medium, Small and Nano, which represent
+sizes of saved Darknet models in 'models' folder. One needs to be selected for algorithm to start.
+4. After selection of image and NN model press this button to start the algorithm for making detections.
+
