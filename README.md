@@ -12,7 +12,8 @@ I stick with Windows version.
                    IDE, one need to figure out how to do it. Also I used it to build wxWidgets (pretty handy).
  
  - download models from [this folder](https://drive.google.com/drive/folders/1KSpvBsSbB3W632LAG7lWgUYiARo8Mvfa?usp=sharing) on Google Drive.
-   'Large' version of Darknet model has 170+ MB, so it's not possible to store it on GitHub.
+   'Large' version of Darknet model has 170+ MB, so it's not possible to store it on GitHub. Folder 'models', which contain all downloaded 
+   models, should be placed directly in project directory (/DarknetProject/DarknetProject/models).
 
 !! When you link libraries in VS, make sure you selected _Debug_ and platform _x64_ !!
 
