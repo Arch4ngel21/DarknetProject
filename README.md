@@ -24,9 +24,8 @@ I stick with Windows version.
     - _C/C++_ > _General_ > _Additional Include Directories_: add new value "_path_to_opencv_/include"
     - _Linker_ > _General_ > _Additional Include Directories_: add new value "_path_to_opencv_/x64/vc16/lib"
         (in my case it was vc16, but that depends on version)
-    - _Linker_ > _Input_: add all of following values:
+    - _Linker_ > _Input_ < _Additional dependencies_: add all of the [following values](additional_dependencies.txt).
     
-    ...
 4. Add "_path_to_opencv_/x64/vc16/bin" to PATH in Environment Variables.
     
 ### wxWidgets
